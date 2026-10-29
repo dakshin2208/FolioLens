@@ -1,0 +1,53 @@
+# Production on a single EC2 instance. PostgreSQL runs on RDS, uploads go to S3,
+# Caddy terminates HTTPS with an automatic Let's Encrypt certificate.
+#   cd /opt/foliolens && ./deploy/fetch-env.sh && \
+#   docker compose -f deploy/docker-compose.prod.yml up -d --build
+
+services:
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+
+  api:
+    build: ../backend
+    env_file: ../.env
+    environment:
+      RUN_MIGRATIONS: "true"
+      REDIS_URL: redis://redis:6379/0
+    depends_on: [redis]
+    restart: unless-stopped
+    logging: &logging
+      driver: awslogs
+      options:
+        awslogs-group: /foliolens/app
+        awslogs-create-group: "true"
+        tag: "{{.Name}}"
+
+  worker:
+    build: ../backend
+    command: ["rq", "worker", "foliolens", "--url", "redis://redis:6379/0", "--with-scheduler"]
+    env_file: ../.env
+    environment:
+      REDIS_URL: redis://redis:6379/0
+    depends_on: [redis, api]
+    restart: unless-stopped
+    logging: *logging
+
+  web:
+    build: ../frontend
+    depends_on: [api]
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2-alpine
+    ports: ["80:80", "443:443"]
+    environment:
+      DOMAIN: ${DOMAIN:?set DOMAIN in the shell, e.g. foliolens.example.com}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+    depends_on: [web]
+    restart: unless-stopped
+
+volumes:
+  caddy_data:

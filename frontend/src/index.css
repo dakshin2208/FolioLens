@@ -1,0 +1,242 @@
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/jetbrains-mono";
+@import "tailwindcss";
+
+/* FolioLens theme.
+   Light by default: calm white cards on a soft grey page, one indigo accent for actions,
+   green / red only for gains and losses, amber for "worth a look".
+   A dark theme is kept for people who prefer it (toggle in the sidebar). Every colour in the
+   app comes from these tokens, so the two themes can never drift apart. */
+:root {
+  color-scheme: light;
+  --page: #f5f7fa;
+  --surface: #ffffff;
+  --surface-2: #f4f6f9;
+  --surface-3: #e9edf3;
+  --ink: #111827;
+  --ink-2: #374151;
+  --muted: #6b7280;
+  --faint: #9aa3b2;
+  --grid: #eef1f6;
+  --axis: #d6dce5;
+  --border: #e6e9ef;
+  --border-strong: #d4dae3;
+
+  --nav: #ffffff;
+  --nav-2: #f5f7fa;
+  --nav-ink: #111827;
+  --nav-muted: #4b5563;
+  --overlay: rgba(15, 23, 42, 0.45);
+
+  --accent: #4f46e5;
+  --accent-hover: #4338ca;
+  --accent-soft: rgba(79, 70, 229, 0.08);
+  --accent-ink: #ffffff;
+  --brand: #4f46e5;
+
+  --good: #047857;
+  --good-soft: #ecfdf5;
+  --bad: #dc2626;
+  --bad-soft: #fef2f2;
+  --warn: #b45309;
+  --warn-soft: #fffbeb;
+  --info: #2563eb;
+
+  --series-1: #4f7cf7;
+  --series-2: #14b8a6;
+  --series-3: #f5a524;
+  --series-4: #8b5cf6;
+  --series-5: #ef5a5a;
+  --series-6: #0ea5e9;
+  --series-7: #84cc16;
+  --series-8: #94a3b8;
+
+  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.05);
+  --shadow-md: 0 8px 24px -10px rgba(16, 24, 40, 0.18);
+  --shadow-lg: 0 24px 60px -16px rgba(16, 24, 40, 0.28), 0 0 0 1px var(--border);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0b1020;
+  --surface: #111829;
+  --surface-2: #162036;
+  --surface-3: #1e2a44;
+  --ink: #e8edf6;
+  --ink-2: #b4bfd2;
+  --muted: #8592a8;
+  --faint: #5b6880;
+  --grid: #1a2438;
+  --axis: #2a3754;
+  --border: #1f2a42;
+  --border-strong: #2b3954;
+  --nav: #0d1426;
+  --nav-2: #131c31;
+  --nav-ink: #e6ebf3;
+  --nav-muted: #93a0b6;
+  --overlay: rgba(0, 0, 0, 0.65);
+  --accent: #818cf8;
+  --accent-hover: #a5b4fc;
+  --accent-soft: rgba(129, 140, 248, 0.13);
+  --accent-ink: #0b1020;
+  --brand: #6366f1;
+  --good: #34d399;
+  --good-soft: rgba(52, 211, 153, 0.12);
+  --bad: #f87171;
+  --bad-soft: rgba(248, 113, 113, 0.12);
+  --warn: #fbbf24;
+  --warn-soft: rgba(251, 191, 36, 0.12);
+  --info: #60a5fa;
+  --shadow-sm: 0 0 0 transparent;
+  --shadow-md: 0 8px 24px -8px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 24px 64px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px var(--border-strong);
+}
+
+@theme inline {
+  --color-page: var(--page);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-line: var(--border);
+  --color-line-strong: var(--border-strong);
+  --color-nav: var(--nav);
+  --color-nav-2: var(--nav-2);
+  --color-nav-ink: var(--nav-ink);
+  --color-nav-muted: var(--nav-muted);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-ink: var(--accent-ink);
+  --color-good: var(--good);
+  --color-good-soft: var(--good-soft);
+  --color-bad: var(--bad);
+  --color-bad-soft: var(--bad-soft);
+  --color-warn: var(--warn);
+  --color-warn-soft: var(--warn-soft);
+  --color-info: var(--info);
+  --font-sans: "Inter Variable", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --shadow-card: var(--shadow-sm);
+  --shadow-pop: var(--shadow-md);
+  --shadow-float: var(--shadow-lg);
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-3xl: 20px;
+}
+
+html,
+body {
+  background: var(--page);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "cv11", "ss01";
+}
+body {
+  font-size: 14px;
+}
+/* Numbers: same friendly font, but every digit the same width so columns line up. */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+.label {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--muted);
+}
+::selection {
+  background: rgba(79, 70, 229, 0.2);
+}
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.scroll-thin::-webkit-scrollbar {
+  width: 8px;
+  height: 6px;
+}
+.scroll-thin::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 8px;
+}
+.scroll-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+/* Horizontal tab bars scroll on small screens without showing a bar. */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--surface-2) 0%, var(--surface-3) 50%, var(--surface-2) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+  border-radius: 10px;
+}
+@keyframes shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+.fade-in { animation: fadeIn 0.25s ease-out both; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+.pop-in { animation: popIn 0.18s ease-out both; }
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+
+.live-dot {
+  box-shadow: 0 0 0 0 rgba(4, 120, 87, 0.5);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(4, 120, 87, 0.45); }
+  70% { box-shadow: 0 0 0 6px rgba(4, 120, 87, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(4, 120, 87, 0); }
+}
+
+.soft-grid {
+  background-image:
+    linear-gradient(rgba(79, 70, 229, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(79, 70, 229, 0.05) 1px, transparent 1px);
+  background-size: 36px 36px;
+  mask-image: radial-gradient(ellipse 75% 65% at 50% 30%, #000 30%, transparent 100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Print / Save as PDF: always the light theme, no app chrome. */
+@media print {
+  :root, :root[data-theme="dark"] {
+    color-scheme: light;
+    --page: #fff; --surface: #fff; --surface-2: #f4f6f9; --surface-3: #e9edf3;
+    --ink: #0b0f19; --ink-2: #374151; --muted: #6b7280; --faint: #9ca3af;
+    --border: #e5e7eb; --border-strong: #d1d5db; --grid: #eef0f3; --axis: #d1d5db;
+    --good: #047857; --bad: #dc2626; --accent: #4f46e5; --accent-soft: rgba(79, 70, 229, 0.08);
+  }
+  body { background: #fff; font-size: 12px; }
+  .no-print { display: none !important; }
+  .print-full { margin: 0 !important; padding: 0 !important; max-width: none !important; }
+  section, .avoid-break { break-inside: avoid; }
+  .page-break { break-before: page; }
+}

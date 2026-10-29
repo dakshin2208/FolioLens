@@ -1,0 +1,32 @@
+# Secrets
+.env
+*.pem
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+*.egg-info/
+backend/data/
+
+# Node
+node_modules/
+frontend/dist/
+
+# OS / editors
+.DS_Store
+.vscode/
+.idea/
+
+# Never commit real statements or market data downloads
+*.pdf
+data/
+*.tsbuildinfo
+
+# Cowork app output folder
+Claude outputs/

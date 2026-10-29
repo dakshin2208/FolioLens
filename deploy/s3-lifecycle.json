@@ -1,0 +1,11 @@
+{
+  "Rules": [
+    {
+      "ID": "delete-leftover-uploads-after-1-day",
+      "Filter": {"Prefix": "uploads/"},
+      "Status": "Enabled",
+      "Expiration": {"Days": 1},
+      "AbortIncompleteMultipartUpload": {"DaysAfterInitiation": 1}
+    }
+  ]
+}
