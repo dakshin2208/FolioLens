@@ -31,7 +31,7 @@ import {
 import { useCallback, useEffect, useMemo, useRef, useState, type DragEvent } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 
-import { Breadcrumbs } from "../components/Layout";
+import { Breadcrumbs, DEMO_NOTICE } from "../components/Layout";
 import { PlanEditor } from "../components/PlanEditor";
 import { ReportView } from "../components/ReportView";
 import {
@@ -401,6 +401,7 @@ function UploadWizard({ portfolioId, onUploaded, collapsed }: { portfolioId: str
   return (
     <Card title="Upload a statement" subtitle="Files are deleted as soon as they're parsed. Passwords are never stored." icon={UploadCloud}>
       <div className="space-y-5">
+        {DEMO_NOTICE && <Notice level="warning">{DEMO_NOTICE}</Notice>}
         <div>
           <div className="mb-2 text-[13px] font-medium text-ink">1. Statement type</div>
           <div className="grid gap-3 sm:grid-cols-3" role="radiogroup">

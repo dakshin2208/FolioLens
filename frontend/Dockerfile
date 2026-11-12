@@ -3,6 +3,9 @@ WORKDIR /web
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
+# Optional banner text for a public demo deployment (see deploy/docker-compose.single.yml)
+ARG VITE_DEMO_NOTICE=""
+ENV VITE_DEMO_NOTICE=$VITE_DEMO_NOTICE
 RUN npm run build
 
 FROM nginx:1.27-alpine

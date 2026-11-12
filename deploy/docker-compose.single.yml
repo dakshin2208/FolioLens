@@ -1,0 +1,81 @@
+# FolioLens on ONE server: everything, including PostgreSQL, runs here in Docker.
+# Uploads and nightly database backups go to a private S3 bucket through the EC2 instance's IAM role.
+# Set up and started by deploy/setup.sh (see docs/DEPLOY_AWS_SINGLE.md).
+
+x-logging: &logging
+  driver: json-file
+  options: { max-size: "10m", max-file: "3" }   # keep logs from filling the disk
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: foliolens
+      POSTGRES_USER: foliolens
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?run deploy/setup.sh, which writes .env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U foliolens -d foliolens"]
+      interval: 5s
+      retries: 20
+    restart: unless-stopped
+    logging: *logging
+    # No published port: only the api and worker containers can reach the database.
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    logging: *logging
+
+  api:
+    build: ../backend
+    env_file: ../.env
+    environment:
+      RUN_MIGRATIONS: "true"
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      db: { condition: service_healthy }
+      redis: { condition: service_started }
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/health')"]
+      interval: 10s
+      retries: 12
+    restart: unless-stopped
+    logging: *logging
+
+  worker:
+    build: ../backend
+    command: ["rq", "worker", "foliolens", "--url", "redis://redis:6379/0", "--with-scheduler"]
+    env_file: ../.env
+    environment:
+      REDIS_URL: redis://redis:6379/0
+    depends_on:
+      api: { condition: service_healthy }
+    restart: unless-stopped
+    logging: *logging
+
+  web:
+    build:
+      context: ../frontend
+      args:
+        VITE_DEMO_NOTICE: ${DEMO_NOTICE:-}
+    depends_on: [api]
+    restart: unless-stopped
+    logging: *logging
+
+  caddy:
+    image: caddy:2-alpine
+    ports: ["80:80", "443:443"]
+    environment:
+      DOMAIN: ${DOMAIN:?run deploy/setup.sh, which works out the domain}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+    depends_on: [web]
+    restart: unless-stopped
+    logging: *logging
+
+volumes:
+  pgdata:
+  caddy_data:

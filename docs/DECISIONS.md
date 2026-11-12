@@ -75,3 +75,11 @@ read and written together, validated by Pydantic. **Trade-off:** no SQL queries 
 ## D-26: Tax-aware selection
 **Decision:** Rebalancing sells the holdings with the smallest gain per rupee first. **Why:** the same
 amount moves with the least tax. **Trade-off:** ignores exit loads and fund quality; the advisor decides.
+
+## D-27: First deployment on one server
+**Decision:** One EC2 t4g.small (arm64) runs everything in Docker, including PostgreSQL; S3 for uploads and
+nightly `pg_dump` backups; secrets in SSM via an IAM role; no SSH (Session Manager); free
+`<ip>.sslip.io` HTTPS address until a domain is added. The RDS design (D-08, `docs/DEPLOY_AWS.md`) stays
+as the next step. **Why:** lowest monthly cost and fewest moving parts for a demo site, still on AWS.
+**Trade-off:** the database shares the server; recovery is from the nightly backup (up to 24 hours of
+data loss), which is acceptable for a demo with synthetic data.

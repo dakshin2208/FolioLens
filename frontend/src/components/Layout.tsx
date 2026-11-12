@@ -34,6 +34,18 @@ export function Logo() {
   );
 }
 
+/** Set at build time on a public demo deployment (VITE_DEMO_NOTICE); empty everywhere else. */
+export const DEMO_NOTICE: string = import.meta.env.VITE_DEMO_NOTICE ?? "";
+
+export function DemoNotice() {
+  if (!DEMO_NOTICE) return null;
+  return (
+    <div className="no-print border-b border-warn/25 bg-warn-soft px-4 py-2 text-center text-[12.5px] font-medium text-ink-2" role="note">
+      {DEMO_NOTICE}
+    </div>
+  );
+}
+
 export const DISCLAIMER =
   "FolioLens provides portfolio analytics for information and education only. It is not investment advice. Consult a SEBI-registered investment adviser before making investment decisions.";
 
@@ -63,6 +75,7 @@ export function MarketingLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-page">
       <CommandPalette />
+      <DemoNotice />
       <header className="sticky top-0 z-30 border-b border-line bg-surface/85 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4 sm:px-6">
           <Logo />
@@ -272,6 +285,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       )}
 
       <div className="lg:pl-[256px]">
+        <DemoNotice />
         <main className="print-full mx-auto max-w-[1240px] px-4 py-7 sm:px-6 lg:px-10">{children}</main>
         <footer className="no-print mx-auto max-w-[1240px] px-4 pb-8 text-[11.5px] leading-relaxed text-faint sm:px-6 lg:px-10">{DISCLAIMER}</footer>
       </div>

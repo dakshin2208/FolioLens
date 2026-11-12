@@ -137,7 +137,9 @@ the Nifty 50 TRI benchmark, fund constituents and sector classifications.
 
 ## Deployment
 
-[docs/DEPLOY_AWS.md](docs/DEPLOY_AWS.md): EC2 + Docker Compose, RDS PostgreSQL in a private subnet,
+Quickest: one AWS server with HTTPS in about 45 minutes, see [docs/DEPLOY_AWS_SINGLE.md](docs/DEPLOY_AWS_SINGLE.md).
+
+Full design, [docs/DEPLOY_AWS.md](docs/DEPLOY_AWS.md): EC2 + Docker Compose, RDS PostgreSQL in a private subnet,
 private encrypted S3 with lifecycle deletion, IAM role, SSM Parameter Store and CloudWatch.
 
 ## Known limitations
