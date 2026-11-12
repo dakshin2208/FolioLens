@@ -69,6 +69,9 @@ def _evidence(finding: dict[str, Any]) -> tuple[list[float], list[date]]:
                 dates.append(date(int(y), int(m), int(d)))
             except ValueError:
                 continue
+    # Text carries the sign in words ("lost ₹6,470", "returned -0.9%" reads the digits only), so a
+    # negative fact may also be written as its absolute value.
+    numbers += [abs(n) for n in numbers if n < 0]
     return numbers, dates
 
 
